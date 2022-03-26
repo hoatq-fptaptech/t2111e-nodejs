@@ -51,3 +51,17 @@ app.get("/ds-hang",function (req,res) {
         });
     })
 });
+
+app.get("/ds-sp-hang",function (req,res) {
+    // tra ve danh sach hang trong db
+    const tenhang =  req.query.hang;
+    const sql_txt = "select * from Ass3_SanPham left join Ass3_Hang on Ass3_SanPham.TenHang = Ass3_Hang.TenHang " +
+        "where Ass3_SanPham.TenHang like '%"+tenhang+"%'";
+    conn.query(sql_txt,function (err,result) {
+        if(err) res.send(err.message);
+        else res.send({
+            message:"Success",
+            data:result
+        });
+    })
+});
