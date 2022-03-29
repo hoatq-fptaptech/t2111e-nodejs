@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sản phẩm</title>
+    <%- include("stylesheet.ejs") %>
+</head>
+<body>
+<h1>Gia tri truyen sang: <%= abc %> </h1>
+    <section class="col-md-12">
+        <div class="container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>TenSP</th>
+                        <th>Gia</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(var i=0;i<products.length;i++){ %>
+                        <tr>
+                            <td><%= products[i].ID %></td>
+                            <td><a href="/chi-tiet?id=<%= products[i].ID %>"><%= products[i].TenSP %></a></td>
+
+                            <td><%= products[i].Gia %></td>
+
+                        </tr>
+                    <% } %>
+
+                </tbody>
+            </table>
+        </div>
+    </section>
+</body>
+</html>

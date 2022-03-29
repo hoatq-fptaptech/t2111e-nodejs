@@ -12,7 +12,8 @@ const conn = mysql.createConnection({
    port:"3306",
    user:"root",
    password:"root", // xampp: để trống
-   database:"T2111E"
+   database:"T2111E",
+   multipleStatements: true
 });
 
 
@@ -23,7 +24,15 @@ app.use(express.static("public"));
 
 // tao trang chu
 app.get("/",function (req,res) {
-    res.render("home");
+    const sql_txt = "select * from Ass3_Hang;select * from Ass3_SanPham;";
+    conn.query(sql_txt,function (err,result) {
+        if(err) res.send(err.message);
+        else res.render("home",{
+            hangs:result[0],
+            sanphams:result[1]
+        });
+    })
+   // res.render("home");
 });
 
 app.get("/thoi-su",function (req,res) {
@@ -65,3 +74,48 @@ app.get("/ds-sp-hang",function (req,res) {
         });
     })
 });
+app.get("/san-pham",function (req,res) {
+    const sql_txt = "select * from Ass3_SanPham";
+    var x = 10;
+    conn.query(sql_txt,function (err,result) {
+        if(err) res.send(err.message);
+        else res.render("products",{
+            products:result,
+            abc:x
+        });
+    })
+});
+app.get("/chi-tiet",function (req,res) {
+    const spid = req.query.id || 0;
+    const sql_txt = "select * from Ass3_SanPham where ID = "+spid;
+    conn.query(sql_txt,function (err,result) {
+        if(err) res.send(err.message);
+        else if(result.length > 0)
+            res.render("detail",{
+                product:result[0]
+            });
+        else res.send("404 Not found");
+    })
+
+})
+
+app.get("/chi-tiet-hang",function (req,res) {
+    const ms = req.query.masohang || "";
+    const sql_txt = `select * from Ass3_Hang where MaSoHang = '${ms}'`;
+    conn.query(sql_txt,function (err,result) {
+        if(err) res.send(err.message);
+        else if(result.length > 0)
+        {
+            // viet sql truy van san pham
+            const sql_txt2 = `select * from Ass3_SanPham where TenHang like '${result[0].TenHang}'`;
+            conn.query(sql_txt2,function (err2,result2) {
+                if(err2) res.send(err2.message);
+                else res.render("chitiethang",{
+                    hang:result[0],
+                    sanphams:result2
+                })
+            })
+        }
+        else res.send("404 Not found");
+    })
+})
